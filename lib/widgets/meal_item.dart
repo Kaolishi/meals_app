@@ -4,9 +4,10 @@ import 'package:meals_app/widgets/meal_item_trait.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 class MealItem extends StatelessWidget {
-  const MealItem({super.key, required this.meal});
+  const MealItem({super.key, required this.meal, required this.onSelectMeal});
 
   final Meal meal;
+  final Function(Meal meal) onSelectMeal;
 
   // A function to ensure all text starts with upper case
   String get complexityText {
@@ -28,7 +29,9 @@ class MealItem extends StatelessWidget {
       clipBehavior: Clip.hardEdge,
       elevation: 2,
       child: InkWell(
-        onTap: () {},
+        onTap: () {
+          onSelectMeal(meal);
+        },
         // Stacks allow widgets to be stacked on top of each other
         child: Stack(
           children: [
@@ -70,7 +73,7 @@ class MealItem extends StatelessWidget {
                       children: [
                         MealItemTrait(
                           icon: Icons.schedule,
-                          label: '${meal.duration} minutes',
+                          label: '${meal.duration} mins',
                         ),
                         const SizedBox(width: 12),
                         MealItemTrait(
