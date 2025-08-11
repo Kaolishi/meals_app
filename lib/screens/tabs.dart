@@ -14,6 +14,15 @@ class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
   final List<Meal> _favouriteMeals = [];
 
+  void _showInfoMessage(String message) {
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+      ),
+    );
+  }
+
   //Method that adds meals to a list of favourite meals and updates the meals' status as 'favourite'
   //Will be passed to meal_details.dart
   void _toggleMealFavouriteStatus(Meal meal) {
@@ -23,10 +32,12 @@ class _TabsScreenState extends State<TabsScreen> {
     if (isExisting) {
       setState(() {
         _favouriteMeals.remove(meal);
+        _showInfoMessage('Meal is no longer a favourite');
       });
     } else {
       setState(() {
         _favouriteMeals.add(meal);
+        _showInfoMessage('Meal is added as favourite');
       });
     }
   }
