@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/screens/categories.dart';
+import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/widgets/main_drawer.dart';
 
@@ -24,8 +25,8 @@ class _TabsScreenState extends State<TabsScreen> {
     );
   }
 
-  //Method that adds meals to a list of favourite meals and updates the meals' status as 'favourite'
-  //Will be passed to meal_details.dart
+  // Method that adds meals to a list of favourite meals and updates the meals' status as 'favourite'
+  // Will be passed to meal_details.dart
   void _toggleMealFavouriteStatus(Meal meal) {
     // Check if the meal is already in the list
     final isExisting = _favouriteMeals.contains(meal);
@@ -43,11 +44,25 @@ class _TabsScreenState extends State<TabsScreen> {
     }
   }
 
-  //Method that updates _selectedPageIndex value based on the page the user is on
+  // Method that updates _selectedPageIndex value based on the page the user is on
   void _selectPage(int index) {
     setState(() {
       _selectedPageIndex = index;
     });
+  }
+
+  // Method that is executed when a drawer item is pressed
+  void _setScreen(String identifier) {
+    // Pops the side drawer before going to the next screen
+    Navigator.of(context).pop();
+    if (identifier == 'filters') {
+      // pushReplacement replaces the current active screen instead of adding to the stack of screens
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (ctx) => const FiltersScreen(),
+        ),
+      );
+    }
   }
 
   @override
@@ -70,7 +85,9 @@ class _TabsScreenState extends State<TabsScreen> {
       appBar: AppBar(
         title: Text(activePageTitle),
       ),
-      drawer: const MainDrawer(),
+      drawer: MainDrawer(
+        onSelectScreen: _setScreen,
+      ),
       body: activePage,
       //Scaffold allows you to set a bottom navigation bar using BottomNavigationBar widget
       bottomNavigationBar: BottomNavigationBar(
