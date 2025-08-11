@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/screens/categories.dart';
 import 'package:meals_app/screens/meals.dart';
 
@@ -11,6 +12,24 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
+  final List<Meal> _favouriteMeals = [];
+
+  //Method that adds meals to a list of favourite meals and updates the meals' status as 'favourite'
+  //Will be passed to meal_details.dart
+  void _toggleMealFavouriteStatus(Meal meal) {
+    // Check if the meal is already in the list
+    final isExisting = _favouriteMeals.contains(meal);
+
+    if (isExisting) {
+      setState(() {
+        _favouriteMeals.remove(meal);
+      });
+    } else {
+      setState(() {
+        _favouriteMeals.add(meal);
+      });
+    }
+  }
 
   //Method that updates _selectedPageIndex value based on the page the user is on
   void _selectPage(int index) {
@@ -21,12 +40,17 @@ class _TabsScreenState extends State<TabsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    Widget activePage = const CategoriesScreen();
+    Widget activePage = CategoriesScreen(
+      onToggleFavourite: _toggleMealFavouriteStatus,
+    );
     var activePageTitle = 'Categories';
 
     // Changes the title and screen contents based on selectedPageIndex value
     if (_selectedPageIndex == 1) {
-      activePage = MealsScreen(meals: []);
+      activePage = MealsScreen(
+        meals: _favouriteMeals,
+        onToggleFavourite: _toggleMealFavouriteStatus,
+      );
       activePageTitle = 'Your Favourites';
     }
 
