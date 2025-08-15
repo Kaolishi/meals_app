@@ -19,6 +19,8 @@ class MealDetailsScreen extends ConsumerWidget {
         actions: [
           IconButton(
             onPressed: () {
+              // Using ref.read to access the favouriteMealsProvider notifier
+              // which lets us call methods that can modify the provider state
               final wasAdded = ref
                   .read(favouriteMealsProvider.notifier)
                   .toggleMealFavouriteStatus(meal);

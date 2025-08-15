@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/screens/categories.dart';
 import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
@@ -24,7 +23,6 @@ const kInitialFilters = {
 //
 // This widget is the entry point of the application, managing the tab navigation
 // between different screens such as categories and favorites.
-
 class TabsScreen extends ConsumerStatefulWidget {
   const TabsScreen({super.key});
 
