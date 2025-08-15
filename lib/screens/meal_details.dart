@@ -4,27 +4,44 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:meals_app/models/meal.dart';
 import 'package:meals_app/providers/favourites_provider.dart';
 
+// Screen that displays detailed information about a specific meal
+// Uses ConsumerWidget to access Riverpod providers for managing favourite meals
 class MealDetailsScreen extends ConsumerWidget {
   const MealDetailsScreen({super.key, required this.meal});
 
+  // The meal object containing all the details to be displayed
   final Meal meal;
 
   // WidgetRef ref is added to listen from providers
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Watch the favourites provider to get current list of favourite meals
+    // This will rebuild the widget when the favourites list changes
+    final favouriteMeals = ref.watch(
+      favouriteMealsProvider,
+    ); // Watching the provider to rebuild when state changes
+
+    // Check if the current meal is in the favourites list
+    final isFavourite = favouriteMeals.contains(meal);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(meal.title),
-        //actions adds buttons to the AppBar
+        // actions adds buttons to the AppBar
+        // Favourite toggle button in the app bar
         actions: [
           IconButton(
+            // Handle favourite toggle when button is pressed
             onPressed: () {
               // Using ref.read to access the favouriteMealsProvider notifier
               // which lets us call methods that can modify the provider state
               final wasAdded = ref
                   .read(favouriteMealsProvider.notifier)
                   .toggleMealFavouriteStatus(meal);
+
+              // Clear any existing snack bars to avoid stacking
               ScaffoldMessenger.of(context).clearSnackBars();
+              // Show feedback to user about the favourite action
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
@@ -33,20 +50,25 @@ class MealDetailsScreen extends ConsumerWidget {
                 ),
               );
             },
-            icon: const Icon(Icons.star),
+            // Dynamic icon based on favourite status (filled star vs outline)
+            icon: Icon(isFavourite ? Icons.star : Icons.star_border),
           ),
         ],
       ),
+      // Scrollable content area for meal details
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Hero image of the meal
             Image.network(
               meal.imageUrl,
               width: double.infinity,
               height: 300,
-              fit: BoxFit.cover,
+              fit: BoxFit.cover, // Ensures image covers the full width
             ),
             const SizedBox(height: 14),
+
+            // Ingredients section header
             Text(
               'Ingredients',
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -55,6 +77,8 @@ class MealDetailsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 14),
+
+            // Display each ingredient in the list
             for (final ingredient in meal.ingredients)
               Text(
                 ingredient,
@@ -63,6 +87,8 @@ class MealDetailsScreen extends ConsumerWidget {
                 ),
               ),
             const SizedBox(height: 24),
+
+            // Cooking steps section header
             Text(
               'Steps',
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -71,6 +97,8 @@ class MealDetailsScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 14),
+
+            // Display each cooking step with proper formatting
             for (final steps in meal.steps)
               Padding(
                 padding: const EdgeInsets.symmetric(
