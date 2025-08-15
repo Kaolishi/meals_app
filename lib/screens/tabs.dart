@@ -7,6 +7,7 @@ import 'package:meals_app/screens/filters.dart';
 import 'package:meals_app/screens/meals.dart';
 import 'package:meals_app/widgets/main_drawer.dart';
 import 'package:meals_app/providers/meals_provider.dart';
+import 'package:meals_app/providers/favourites_provider.dart';
 
 const kInitialFilters = {
   Filter.glutenFree: false,
@@ -33,36 +34,7 @@ class TabsScreen extends ConsumerStatefulWidget {
 
 class _TabsScreenState extends ConsumerState<TabsScreen> {
   int _selectedPageIndex = 0;
-  final List<Meal> _favouriteMeals = [];
   Map<Filter, bool> _selectedFilters = kInitialFilters;
-
-  void _showInfoMessage(String message) {
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
-
-  // Method that adds meals to a list of favourite meals and updates the meals' status as 'favourite'
-  // Will be passed to meal_details.dart
-  void _toggleMealFavouriteStatus(Meal meal) {
-    // Check if the meal is already in the list
-    final isExisting = _favouriteMeals.contains(meal);
-
-    if (isExisting) {
-      setState(() {
-        _favouriteMeals.remove(meal);
-        _showInfoMessage('Meal is no longer a favourite');
-      });
-    } else {
-      setState(() {
-        _favouriteMeals.add(meal);
-        _showInfoMessage('Meal is added as favourite');
-      });
-    }
-  }
 
   // Method that updates _selectedPageIndex value based on the page the user is on
   void _selectPage(int index) {
@@ -113,16 +85,15 @@ class _TabsScreenState extends ConsumerState<TabsScreen> {
     }).toList();
 
     Widget activePage = CategoriesScreen(
-      onToggleFavourite: _toggleMealFavouriteStatus,
       availableMeals: availableMeals,
     );
     var activePageTitle = 'Categories';
 
     // Changes the title and screen contents based on selectedPageIndex value
     if (_selectedPageIndex == 1) {
+      final favouriteMeals = ref.watch(favouriteMealsProvider);
       activePage = MealsScreen(
-        meals: _favouriteMeals,
-        onToggleFavourite: _toggleMealFavouriteStatus,
+        meals: favouriteMeals,
       );
       activePageTitle = 'Your Favourites';
     }
