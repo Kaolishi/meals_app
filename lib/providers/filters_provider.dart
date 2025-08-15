@@ -1,5 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'package:meals_app/providers/meals_provider.dart';
+
 // Enum defining the available dietary filter types
 // These filters help users narrow down meal options based on dietary preferences
 enum Filter {
@@ -51,3 +53,36 @@ final filtersProvider =
     StateNotifierProvider<FiltersNotifier, Map<Filter, bool>>(
       (ref) => FiltersNotifier(), // Creates a new FiltersNotifier instance
     );
+
+// Provider that computes filtered meals based on active dietary filters
+// This is a computed Provider that depends on both mealsProvider and filtersProvider
+// It automatically recalculates when either the meals data or filter settings change
+final filteredMealsProvider = Provider((ref) {
+  // Watch the meals provider to get the complete list of available meals
+  final meals = ref.watch(mealsProvider);
+  // Watch the filters provider to get current filter states
+  final activeFilters = ref.watch(filtersProvider);
+
+  // Filter meals based on active dietary preferences
+  // Uses where() method to check each meal against all active filters
+  return meals.where((meal) {
+    // If gluten-free filter is active and meal contains gluten, exclude it
+    if (activeFilters[Filter.glutenFree]! && !meal.isGlutenFree) {
+      return false;
+    }
+    // If lactose-free filter is active and meal contains lactose, exclude it
+    if (activeFilters[Filter.lactoseFree]! && !meal.isLactoseFree) {
+      return false;
+    }
+    // If vegetarian filter is active and meal is not vegetarian, exclude it
+    if (activeFilters[Filter.vegetarian]! && !meal.isVegetarian) {
+      return false;
+    }
+    // If vegan filter is active and meal is not vegan, exclude it
+    if (activeFilters[Filter.vegan]! && !meal.isVegan) {
+      return false;
+    }
+    // If meal passes all active filter checks, include it in the result
+    return true;
+  }).toList(); // Convert filtered iterable to List
+});
