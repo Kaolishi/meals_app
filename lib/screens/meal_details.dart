@@ -38,7 +38,6 @@ class MealDetailsScreen extends ConsumerWidget {
               final wasAdded = ref
                   .read(favouriteMealsProvider.notifier)
                   .toggleMealFavouriteStatus(meal);
-
               // Clear any existing snack bars to avoid stacking
               ScaffoldMessenger.of(context).clearSnackBars();
               // Show feedback to user about the favourite action
@@ -51,7 +50,19 @@ class MealDetailsScreen extends ConsumerWidget {
               );
             },
             // Dynamic icon based on favourite status (filled star vs outline)
-            icon: Icon(isFavourite ? Icons.star : Icons.star_border),
+            icon: AnimatedSwitcher(
+              duration: const Duration(milliseconds: 300),
+              transitionBuilder: (child, animation) {
+                return RotationTransition(
+                  turns: Tween<double>(begin: 0.8, end: 1).animate(animation),
+                  child: child,
+                );
+              },
+              child: Icon(
+                isFavourite ? Icons.star : Icons.star_border,
+                key: ValueKey(isFavourite),
+              ),
+            ),
           ),
         ],
       ),
