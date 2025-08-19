@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:meals_app/data/dummy_data.dart';
 
 /// Provides a list of meals to the application.

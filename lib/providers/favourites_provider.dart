@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+
 import 'package:meals_app/models/meal.dart';
 
 // StateNotifier is a class that manages state and notifies listeners when state changes.
