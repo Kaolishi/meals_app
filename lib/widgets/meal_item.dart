@@ -35,13 +35,16 @@ class MealItem extends StatelessWidget {
         // Stacks allow widgets to be stacked on top of each other
         child: Stack(
           children: [
-            FadeInImage(
-              placeholder: MemoryImage(kTransparentImage),
-              image: NetworkImage(meal.imageUrl),
-              // BoxFit.cover makes sure that the image is cut off instead of distorted
-              fit: BoxFit.cover,
-              height: 200,
-              width: double.infinity,
+            Hero(
+              tag: meal.id,
+              child: FadeInImage(
+                placeholder: MemoryImage(kTransparentImage),
+                image: NetworkImage(meal.imageUrl),
+                // BoxFit.cover makes sure that the image is cut off instead of distorted
+                fit: BoxFit.cover,
+                height: 200,
+                width: double.infinity,
+              ),
             ),
             // Positioned allows you to position widgets on that are on of another widget
             Positioned(

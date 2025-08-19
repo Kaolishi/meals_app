@@ -50,16 +50,21 @@ class MealDetailsScreen extends ConsumerWidget {
               );
             },
             // Dynamic icon based on favourite status (filled star vs outline)
+            // AnimatedSwitcher provides smooth transition when icon changes
             icon: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
+              // Custom transition builder for rotation animation
               transitionBuilder: (child, animation) {
                 return RotationTransition(
+                  // Rotate from 80% to 100% (0.8 to 1) for subtle spin effect
                   turns: Tween<double>(begin: 0.8, end: 1).animate(animation),
                   child: child,
                 );
               },
               child: Icon(
                 isFavourite ? Icons.star : Icons.star_border,
+                // ValueKey ensures AnimatedSwitcher recognizes when to animate
+                // Different keys trigger the transition animation
                 key: ValueKey(isFavourite),
               ),
             ),
@@ -71,11 +76,15 @@ class MealDetailsScreen extends ConsumerWidget {
         child: Column(
           children: [
             // Hero image of the meal
-            Image.network(
-              meal.imageUrl,
-              width: double.infinity,
-              height: 300,
-              fit: BoxFit.cover, // Ensures image covers the full width
+            // Hero widget creates smooth transition animation when navigating from meal list
+            Hero(
+              tag: meal.id, // Unique tag to match with hero in previous screen
+              child: Image.network(
+                meal.imageUrl,
+                width: double.infinity,
+                height: 300,
+                fit: BoxFit.cover, // Ensures image covers the full width
+              ),
             ),
             const SizedBox(height: 14),
 
